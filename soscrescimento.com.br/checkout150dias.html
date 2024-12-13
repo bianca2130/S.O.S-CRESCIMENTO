@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Pagamento via Pix</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #eef2f3, #dfe9f3);
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+      padding: 25px 35px;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      color: #28a745;
+      font-size: 34px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .alert {
+      text-align: center;
+      background: #ffe6e6;
+      color: #d9534f;
+      padding: 10px;
+      margin-bottom: 25px;
+      border: 1px solid #f5c6cb;
+      border-radius: 8px;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e9ecef;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 15px 0 25px;
+    }
+
+    .progress-bar div {
+      width: 60%;
+      height: 100%;
+      background: #28a745;
+      transition: width 0.3s ease;
+    }
+
+    .qr-section {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .qr-section img {
+      max-width: 200px;
+      height: auto;
+      margin-bottom: 10px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
+
+    .qr-section p {
+      flex: 1;
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .form-section {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 1px solid #dee2e6;
+    }
+
+    .form-section h2 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-section h2::before {
+      content: '\1F464';
+      margin-right: 12px;
+      font-size: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .form-group input {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      transition: border 0.3s ease;
+    }
+
+    .form-group input:focus {
+      border-color: #28a745;
+      box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      background: #28a745;
+      color: white;
+      text-align: center;
+      font-size: 18px;
+      padding: 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #218838;
+    }
+
+    .details-section {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 10px;
+      border: 1px solid #dee2e6;
+    }
+
+    .details-section h2 {
+      font-size: 22px;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .details-section h2::before {
+      content: '\1F4B0';
+      margin-right: 12px;
+      font-size: 24px;
+    }
+
+    .details-section ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .details-section ul li {
+      font-size: 16px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .details-section ul li span {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .guarantee {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .guarantee img {
+      max-width: 100px;
+      margin-top: 12px;
+    }
+
+    .support-link {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .support-link a {
+      color: #28a745;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .support-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .qr-section {
+        flex-direction: column;
+      }
+
+      .qr-section img {
+        margin-bottom: 15px;
+      }
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s;
+    }
+
+    .modal.show {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .modal-content button {
+      padding: 12px 20px;
+      font-size: 16px;
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .modal-content button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="header"> Pagamento via Pix</h1>
+    <div class="alert">Cartões de crédito temporariamente indisponíveis. Utilize o Pix para pagamento.</div>
+
+    <div class="progress-bar">
+      <div></div>
+    </div>
+
+    <div class="qr-section">
+      <img src="imagens/150dias.png" alt="QR Code Pix">
+      <p> <strong>PAGUE COM O QR-CODE AO LADO</strong></p>
+    </div>
+
+    <div class="form-section">
+      <h2>Preencha suas informações</h2>
+      <form id="checkout-form">
+        <div class="form-group">
+          <label for="nome">Nome Completo:</label>
+          <input type="text" id="nome" placeholder="Digite seu nome completo" required>
+        </div>
+        <div class="form-group">
+          <label for="endereco">Endereço (Rua, Número, Bairro):</label>
+          <input type="text" id="endereco" placeholder="Digite seu endereço completo" required>
+        </div>
+        <div class="form-group">
+          <label for="cidade">Cidade:</label>
+          <input type="text" id="cidade" placeholder="Digite sua cidade" required>
+        </div>
+        <div class="form-group">
+          <label for="cep">CEP:</label>
+          <input type="text" id="cep" placeholder="Digite seu CEP" required>
+        </div>
+        <button type="button" class="btn" onclick="showModal()">Confirmar Pedido</button>
+      </form>
+    </div>
+
+    <div class="details-section">
+      <h2>Detalhes do Pedido:</h2>
+      <ul>
+        <li><span>Produto:</span> Tratamento para 150 Dias</li>
+        <li><span>Descrição:</span> 4 Shampoo, 4 Máscara, 4 Tônico Capilar, 1 Kit SOS Crescimento de Brinde</li>
+        <li><span>Preço:</span> R$ 479,00 </li>
+      </ul>
+    </div>
+
+    <p class="guarantee">100% Satisfação Garantida ou Seu Dinheiro de Volta</p>
+    <div class="guarantee">
+      <img src="imagens/selo-de-garantia.png" alt="Selo de Garantia">
+    </div>
+
+    <div class="support-link">
+      Precisa de ajuda? <a href="#">Entre em contato com nosso suporte.</a>
+    </div>
+  </div>
+
+  <div class="modal" id="confirmation-modal">
+    <div class="modal-content">
+      <h2>Pagamento Pendente</h2>
+      <p>Seu pedido foi recebido, mas o pagamento ainda não foi identificado. Por favor, efetue o pagamento via Pix para concluir a compra.</p>
+      <button onclick="closeModal()">Entendido</button>
+    </div>
+  </div>
+
+  <script>
+    function showModal() {
+      document.getElementById('confirmation-modal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('confirmation-modal').classList.remove('show');
+    }
+  </script>
+</body>
+</html>
