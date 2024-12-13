@@ -336,7 +336,7 @@
           <label for="cep">CEP:</label>
           <input type="text" id="cep" placeholder="Digite seu CEP" required>
         </div>
-        <button type="button" class="btn" onclick="showModal()">Confirmar Pedido</button>
+        <button type="button" class="btn" id="confirmar-pedido-150dias" onclick="showModal()">Confirmar Pedido</button>
       </form>
     </div>
 
@@ -375,6 +375,16 @@
     function closeModal() {
       document.getElementById('confirmation-modal').classList.remove('show');
     }
+
+    document.getElementById("confirmar-pedido-150dias").addEventListener("click", function () {
+  gtag('event', 'conversion', {
+    'send_to': 'AW-11494531537/EXEMPLO150dias',
+    'value': 479.00, // Substitua pelo valor real
+    'currency': 'BRL'
+  });
+});
+
+
   </script>
 </body>
 </html>
